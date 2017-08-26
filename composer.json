@@ -1,0 +1,29 @@
+{
+    "name": "kapi/http",
+    "description": "Kapi Http Component",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adrien Sasia",
+            "email": "a.sasia.ldy@gmail.com",
+            "homepage": "https://github.com/AdrienSldy",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "a.sasia.ldy@gmail.com",
+        "issues": "https://github.com/kapiphp/http/issues",
+        "forum": "https://stackoverflow.com/tags/kapi+http",
+        "wiki": "https://github.com/kapiphp/http/wiki",
+        "source": "https://github.com/kapiphp/http"
+    },
+    "require": {
+        "psr/http-message": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kapi\\Http\\": ""
+        }
+    }
+}
