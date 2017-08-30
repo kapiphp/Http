@@ -2,6 +2,7 @@
 
 namespace Kapi\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
@@ -60,6 +61,19 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
      */
     public function moveTo($targetPath)
     {
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Cannot retrieve stream due to upload error');
+        }
+
+        if ($this->moved) {
+            throw new RuntimeException('Cannot move file; already moved!');
+        }
+
+        if (!is_string($targetPath) || !$targetPath) {
+            throw new InvalidArgumentException(
+                'Invalid path provided for move operation; must be a non-empty string'
+            );
+        }
         // TODO: Implement moveTo() method.
     }
 
