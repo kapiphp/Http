@@ -24,7 +24,7 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
     /**
      * @var string
      */
-    protected $clientFileName;
+    protected $clientFilename;
 
     /**
      * @var string
@@ -75,7 +75,7 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
      */
     public function getClientFilename()
     {
-        return $this->clientFileName;
+        return $this->clientFilename;
     }
 
     /**
