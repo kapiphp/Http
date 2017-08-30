@@ -4,6 +4,7 @@ namespace Kapi\Http;
 
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 
 abstract class AbstractUploadedFile implements UploadedFileInterface
 {
@@ -16,6 +17,8 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
      * @var
      */
     protected $file;
+
+    protected $moved;
 
     protected $size;
 
@@ -36,7 +39,13 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
      */
     public function getStream()
     {
-        // TODO: Implement getStream() method.
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Cannot retrieve stream due to upload error');
+        }
+
+        if ($this->moved) {
+            throw new RuntimeException('Cannot retrieve stream after it has already been moved');
+        }
 
         if ($this->stream instanceof StreamInterface) {
             return $this->stream;
