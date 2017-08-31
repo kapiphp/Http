@@ -3,12 +3,39 @@
 namespace Kapi\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 abstract class AbstractServerRequest extends AbstractRequest implements ServerRequestInterface
 {
+    /**
+     * @var array
+     */
     protected $serverParams;
 
+    /**
+     * @var array
+     */
     protected $cookieParams;
+
+    /**
+     * @var array
+     */
+    protected $queryParams;
+
+    /**
+     * @var UploadedFileInterface[]
+     */
+    protected $uploadedFiles;
+
+    /**
+     * @var
+     */
+    protected $parsedBody;
+
+    /**
+     * @var
+     */
+    protected $attributes;
 
     /**
      * @inheritDoc
@@ -42,7 +69,7 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function getQueryParams()
     {
-        // TODO: Implement getQueryParams() method.
+        return $this->queryParams;
     }
 
     /**
@@ -51,6 +78,10 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
     public function withQueryParams(array $query)
     {
         // TODO: Implement withQueryParams() method.
+        $new = clone $this;
+        $new->queryParams = $query;
+
+        return $new;
     }
 
     /**
@@ -58,7 +89,7 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function getUploadedFiles()
     {
-        // TODO: Implement getUploadedFiles() method.
+        return $this->uploadedFiles;
     }
 
     /**
@@ -67,6 +98,10 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
     public function withUploadedFiles(array $uploadedFiles)
     {
         // TODO: Implement withUploadedFiles() method.
+        $new = clone $this;
+        $new->uploadedFiles = $uploadedFiles;
+
+        return $new;
     }
 
     /**
@@ -74,7 +109,7 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function getParsedBody()
     {
-        // TODO: Implement getParsedBody() method.
+        return $this->parsedBody;
     }
 
     /**
@@ -83,6 +118,10 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
     public function withParsedBody($data)
     {
         // TODO: Implement withParsedBody() method.
+        $new = clone $this;
+        $new->parsedBody = $data;
+
+        return $new;
     }
 
     /**
@@ -90,7 +129,7 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function getAttributes()
     {
-        // TODO: Implement getAttributes() method.
+        return $this->attributes;
     }
 
     /**
@@ -98,7 +137,7 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function getAttribute($name, $default = null)
     {
-        // TODO: Implement getAttribute() method.
+        return $this->attributes[$name] ?? $default;
     }
 
     /**
@@ -107,6 +146,10 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
     public function withAttribute($name, $value)
     {
         // TODO: Implement withAttribute() method.
+        $new = clone $this;
+        $new->attributes[$name] = $value;
+
+        return $new;
     }
 
     /**
@@ -115,6 +158,10 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
     public function withoutAttribute($name)
     {
         // TODO: Implement withoutAttribute() method.
+        $new = clone $this;
+        unset($new->attributes[$name]);
+
+        return $new;
     }
 
 }
