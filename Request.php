@@ -76,20 +76,4 @@ class Request extends AbstractRequest
         $uri = new Uri((string) $uri);
         return $this->withUri($uri);
     }
-
-    /**
-     * @param array|string $body
-     * @return static
-     */
-    public function setBody($body)
-    {
-        if (is_array($body)) {
-            $body = http_build_query($body);
-        }
-
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($body);
-
-        return $this->withBody($stream);
-    }
 }
