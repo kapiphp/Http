@@ -9,8 +9,12 @@ class Message extends AbstractMessage
 {
     /**
      * Message constructor.
+     *
+     * @param array $headers
+     * @param StreamInterface|null $body
+     * @param string $version
      */
-    public function __construct(array $headers, $body, $version = '1.1')
+    public function __construct(array $headers = [], $body = 'php://memory', $version = '1.1')
     {
         $this->headers = $this->headerNames = [];
         $this->addHeaders($headers);
@@ -143,11 +147,14 @@ class Message extends AbstractMessage
     }
 
     /**
-     * @todo Implement all body type: string, resource, array, etc
-     * @param $body
+     * @param mixed $body
      */
-    public function setBody(StreamInterface $body)
+    public function setBody($body)
     {
+        if (!$body instanceof StreamInterface) {
+            $body = new Stream($body, 'wb+');
+        }
+
         $this->stream = $body;
     }
 }

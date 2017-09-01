@@ -29,13 +29,12 @@ class Request extends AbstractRequest
      * @param $body
      * @param string $version
      */
-    public function __construct($uri, $method, array $headers, $body, $version = '1.1')
+    public function __construct($uri, $method, array $headers = [], $body = 'php://memory', $version = '1.1')
     {
         parent::__construct($headers, $body, $version);
         $this->setUri($uri);
         $this->setMethod($method);
     }
-
 
     /**
      * @inheritDoc
@@ -48,6 +47,9 @@ class Request extends AbstractRequest
         return $new;
     }
 
+    /**
+     * @param string $method
+     */
     public function setMethod($method)
     {
         if (!is_string($method)) {

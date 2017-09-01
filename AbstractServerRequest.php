@@ -158,5 +158,4 @@ abstract class AbstractServerRequest extends Request implements ServerRequestInt
 
         return $new;
     }
-
 }
