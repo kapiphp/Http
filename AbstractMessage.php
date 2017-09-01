@@ -11,7 +11,7 @@ abstract class AbstractMessage implements MessageInterface
     /**
      * @var string
      */
-    protected $protocol;
+    protected $protocolVersion;
 
     /**
      * @var array
@@ -33,7 +33,7 @@ abstract class AbstractMessage implements MessageInterface
      */
     public function getProtocolVersion()
     {
-        return $this->protocol;
+        return $this->protocolVersion;
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class AbstractMessage implements MessageInterface
         }
 
         $new = clone $this;
-        $new->protocol = $version;
+        $new->protocolVersion = $version;
 
         return $new;
     }
