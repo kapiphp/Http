@@ -22,9 +22,33 @@ class Request extends AbstractRequest
     ];
 
     /**
+     * Request constructor.
+     * @param null|string|UriInterface $uri
+     * @param string $method
+     * @param array $headers
+     * @param $body
+     * @param string $version
+     */
+    public function __construct($uri, $method, array $headers, $body, $version = '1.1')
+    {
+        parent::__construct($headers, $body, $version);
+        $this->setUri($uri);
+        $this->setMethod($method);
+    }
+
+
+    /**
      * @inheritDoc
      */
     public function withMethod($method)
+    {
+        $new = clone $this;
+        $new->setMethod($method);
+
+        return $new;
+    }
+
+    public function setMethod($method)
     {
         if (!is_string($method)) {
             throw new InvalidArgumentException(sprintf(
@@ -40,7 +64,7 @@ class Request extends AbstractRequest
             ));
         }
 
-        return parent::withMethod($method);
+        $this->method = $method;
     }
 
     /**

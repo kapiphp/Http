@@ -5,7 +5,7 @@ namespace Kapi\Http;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
-abstract class AbstractServerRequest extends AbstractRequest implements ServerRequestInterface
+abstract class AbstractServerRequest extends Request implements ServerRequestInterface
 {
     /**
      * @var array
@@ -77,7 +77,6 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function withQueryParams(array $query)
     {
-        // TODO: Implement withQueryParams() method.
         $new = clone $this;
         $new->queryParams = $query;
 
@@ -97,7 +96,6 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        // TODO: Implement withUploadedFiles() method.
         $new = clone $this;
         $new->uploadedFiles = $uploadedFiles;
 
@@ -117,7 +115,6 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function withParsedBody($data)
     {
-        // TODO: Implement withParsedBody() method.
         $new = clone $this;
         $new->parsedBody = $data;
 
@@ -145,7 +142,6 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function withAttribute($name, $value)
     {
-        // TODO: Implement withAttribute() method.
         $new = clone $this;
         $new->attributes[$name] = $value;
 
@@ -157,7 +153,6 @@ abstract class AbstractServerRequest extends AbstractRequest implements ServerRe
      */
     public function withoutAttribute($name)
     {
-        // TODO: Implement withoutAttribute() method.
         $new = clone $this;
         unset($new->attributes[$name]);
 
