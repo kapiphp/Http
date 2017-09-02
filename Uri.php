@@ -354,4 +354,114 @@ class Uri extends AbstractUri
             throw new InvalidArgumentException('The path of a URI with an authority must start with a slash "/" or be empty');
         }
     }
+
+    /**
+     * * TODO: Control for five rules
+     *
+     * RFC
+     * Si un URI contient un composant d'autorité, le composant du chemin doit être vide ou commencer par un caractère de barre oblique ("/"). Si un URI ne contient pas de composant d'autorité, le chemin ne peut pas commencer par deux caractères slash ("//"). En outre, une référence URI (Section 4.1) peut être une référence de chemin relatif, auquel cas le premier segment de chemin ne peut pas contenir un caractère de deux points (":"). L'ABNF requiert cinq règles distinctes pour désambiguiser ces cas, dont une seule correspondra à la sous-chaîne de chemin d'accès dans une référence URI donnée. Nous utilisons le terme générique «composant du chemin» pour décrire la sous-chaîne URI associée par l'analyseur à l'une de ces règles.
+
+          Chemin = chemin-abempty; Commence par "/" ou est vide
+                        / Chemin-absolu; Commence par "/" mais pas "//"
+                        / Path-noscheme; Commence par un segment non-colon
+                        / Path-root; Commence par un segment
+                        / Chemin-vide; Zéro caractère
+
+          Chemin-abempty = * (segment "/")
+          Path-absolute = "/" [segment-nz * (segment "/")]
+          Path-noscheme = segment-nz-nc * (segment "/") s'il y a pas de scheme et d'autorité
+          Path-rootless = segment-nz * (segment "/")
+          Chemin-vide = 0 <pchar>
+          Segment = * pchar
+          Segment-nz = 1 * pchar
+          Segment-nz-nc = 1 * (non-sauvegardé / codé / sub-delims / "@")
+                        ; Segment sans longueur de zéro sans aucun colon ":"
+
+          Pchar = non-sauvegardé / codé / sub-delims / ":" / "@"
+     *
+     *
+     *
+     * toString
+     *  Cas où le chemin doit être ajusté pour rendre la référence URI
+      Valable en tant que PHP ne permet pas de lancer une exception dans __toString ():
+        - Si le chemin est sans racine et une autorité est présente, le chemin DOIT
+          Être préfixé par "/".
+        - Si le chemin commence avec plus d'un "/" et qu'aucune autorité n'est
+          Présent, les barres de démarrage DOIVENT être réduites à un.
+     */
+    private function _validPath()
+    {
+        $segment = '([' . self::UNRESERVED_CHARACTERS . self::SUB_DELIMS_CHARACTERS . ':@]|%[a-fA-F0-9]{2})+';
+        if ($this->getAuthority()) {
+            // path abempty
+            if (!preg_match('/^(\/' . $segment . ')*$/', $this->path)) {
+                throw new InvalidArgumentException('The path of a URI with an authority must start with a slash "/" or be empty');
+            }
+        } else {
+            // path absolute
+            if (!preg_match('/^\/(' . $segment . '(\/' . $segment . ')*)?$/', $this->path)) {
+                if (!$this->scheme) {
+                    // path noscheme
+                    if (!preg_match('/^([' . self::UNRESERVED_CHARACTERS . self::SUB_DELIMS_CHARACTERS . '@]|%[a-fA-F0-9]{2})+(\/' . $segment . ')*$/', $this->path)) {
+                        throw new InvalidArgumentException('A relative URI must not have a path beginning with a segment containing a colon');
+                    }
+                } else {
+                    // path rootless
+                    if (!preg_match('/^' . $segment . '(\/' . $segment . ')*$/', $this->path)) {
+                        throw new InvalidArgumentException('The path of a URI without an authority must not start with two slashes "//"');
+                    }
+                }
+            }
+        }
+
+        // double "/" est valide mais pas conseillé
+        //
+        //pchar = unreserved / pct-encoded / sub-delims / ":" / "@"
+
+        /**
+         * Si un URI contient un composant d'autorité,
+           le composant du chemin doit être vide ou commencer par un caractère de barre oblique ("/").
+         * Si un URI ne contient pas de composant d'autorité,
+           le chemin ne peut pas commencer par deux caractères slash ("//").
+         * En outre, une référence URI (Section 4.1) peut être une référence de chemin relatif,
+           auquel cas le premier segment de chemin ne peut pas contenir un caractère de deux points (":").
+         * L'ABNF requiert cinq règles distinctes pour désambiguiser ces cas,
+           dont une seule correspondra à la sous-chaîne de chemin d'accès dans une référence URI donnée.
+         * Nous utilisons le terme générique «composant du chemin»
+           pour décrire la sous-chaîne URI associée par l'analyseur à l'une de ces règles.
+
+                path          = path-abempty    ; begins with "/" or is empty
+                                / path-absolute   ; begins with "/" but not "//"
+                                / path-noscheme   ; begins with a non-colon segment
+                                / path-rootless   ; begins with a segment
+                                / path-empty      ; zero characters
+
+                path-abempty  = *( "/" segment )
+                path-absolute = "/" [ segment-nz *( "/" segment ) ]
+                path-noscheme = segment-nz-nc *( "/" segment )
+                path-rootless = segment-nz *( "/" segment )
+                path-empty    = 0<pchar>
+                segment       = *pchar
+                segment-nz    = 1*pchar
+                segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )
+                ; non-zero-length segment without any colon ":"
+
+                pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+
+         */
+        // path abempty if authority
+        $regex = '/(\/pchar)*/';
+
+        // path absolute if no authority
+        $regex = '/\/(pchar+(\/pchar)*)?/';
+
+        // path noscheme if no authority no scheme
+        $regex = '/pchar-:+(\/pchar)*/';
+
+        // path rootless if no authority and scheme
+        $regex = '/pchar+(\/pchar)*/';
+
+        // path empty if no authority and no scheme
+        $regex = '//';
+    }
 }
