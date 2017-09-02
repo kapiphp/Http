@@ -71,18 +71,11 @@ class Request extends AbstractRequest
 
     /**
      * @param null|string|UriInterface $uri
+     * @return static
      */
-    public function setUri($uri, $preserveHost = false)
+    public function setUri($uri)
     {
-        $this->uri = new Uri((string) $uri);
-
-        if (!$preserveHost || !$this->getHeader('Host')) {
-            if ($host = $uri->getHost()) {
-                if ($port = $uri->getPort()) {
-                    $host .= ':' . $port;
-                }
-                $this->setHeader('Host', $host);
-            }
-        }
+        $uri = new Uri((string) $uri);
+        return $this->withUri($uri);
     }
 }
