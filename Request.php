@@ -75,7 +75,8 @@ class Request extends AbstractRequest
      */
     public function setUri($uri, $preserveHost = false)
     {
-        $this->uri = new Uri((string) $uri);
+        $uri = new Uri((string) $uri);
+        $this->uri = $uri;
 
         if (!$preserveHost || !$this->getHeader('Host')) {
             if ($host = $uri->getHost()) {
