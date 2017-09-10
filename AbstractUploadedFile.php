@@ -15,14 +15,23 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
     protected $stream;
 
     /**
-     * @var
+     * @var string
      */
     protected $file;
 
+    /**
+     * @var bool
+     */
     protected $moved;
 
+    /**
+     * @var int
+     */
     protected $size;
 
+    /**
+     * @var int
+     */
     protected $error;
 
     /**
@@ -74,7 +83,19 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
                 'Invalid path provided for move operation; must be a non-empty string'
             );
         }
-        // TODO: Implement moveTo() method.
+
+        if ($this->file) {
+            if ((php_sapi_name() == 'cli' && !rename($this->file, $targetPath)) || !move_uploaded_file($this->file, $targetPath)) {
+                throw new RuntimeException('Error occurred while moving uploaded file');
+            }
+        } else {
+            $source = $this->getStream();
+            $source->rewind();
+            $destination = new Stream($targetPath, 'wb+');
+            $destination->write($source->getContents());
+        }
+
+        $this->moved = true;
     }
 
     /**
