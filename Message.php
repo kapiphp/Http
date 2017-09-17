@@ -11,7 +11,7 @@ class Message extends AbstractMessage
      * Message constructor.
      *
      * @param array $headers
-     * @param StreamInterface|null $body
+     * @param StreamInterface|string|null $body
      * @param string $version
      */
     public function __construct(array $headers = [], $body = 'php://memory', $version = '1.1')
@@ -114,8 +114,7 @@ class Message extends AbstractMessage
             $value = [$value];
         }
 
-        $value = array_map(function ($value)
-        {
+        $value = array_map(function ($value) {
             if (!is_string($value) && !is_numeric($value)) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid header value type; must be a string or numeric; received %s',

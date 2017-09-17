@@ -17,7 +17,7 @@ class Client
     /**
      * @var array
      */
-    private $_config;
+    private $config;
 
     /**
      * @var resource
@@ -49,7 +49,7 @@ class Client
 
     public function setConfig(array $config)
     {
-        $this->_config = $config;
+        $this->config = $config;
     }
 
     public function setHeader($name, $value)
@@ -164,7 +164,7 @@ class Client
 
     private function responseParser($headers, $content)
     {
-        $this->_parseHeaders($headers);
+        $this->parseHeaders($headers);
 
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($content);
@@ -173,7 +173,7 @@ class Client
         $this->response = $this->response->withBody($stream);
     }
 
-    private function _parseHeaders($headers)
+    private function parseHeaders($headers)
     {
         foreach ($headers as $value) {
             if (substr($value, 0, 5) === 'HTTP/') {

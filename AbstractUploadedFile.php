@@ -129,5 +129,4 @@ abstract class AbstractUploadedFile implements UploadedFileInterface
     {
         return $this->clientMediaType;
     }
-
 }
